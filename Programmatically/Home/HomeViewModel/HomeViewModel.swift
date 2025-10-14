@@ -38,9 +38,9 @@ class HomeViewModel {
         
         // Main List
         var mainList    = [HomeModel.MainList]()
-        mainList = [HomeModel.MainList(imageList: ""),
-                    HomeModel.MainList(imageList: ""),
-                    HomeModel.MainList(imageList: "")]
+        mainList = [HomeModel.MainList(imageList: "list"),
+                    HomeModel.MainList(imageList: "list"),
+                    HomeModel.MainList(imageList: "list")]
         self.data.append(CustomMainData(mainSection: HomeType.MAINLIST.rawValue, value: mainList))
     }
     

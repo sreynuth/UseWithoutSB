@@ -10,6 +10,7 @@ import UIKit
 class EventCell: UITableViewCell {
 
     let imageSlid = UIImageView()
+    let contentUIView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -19,17 +20,27 @@ class EventCell: UITableViewCell {
     required init?(coder: NSCoder) { fatalError() }
     
     func setupViews() {
-        contentView.backgroundColor = UIColor.systemGray6
-        contentView.layer.cornerRadius = 12
+        contentUIView.layer.shadowRadius        = 12
+        contentUIView.cornerAllRadius           = 12
+        contentUIView.layer.applySketchShadow(color: UIColor(hexString: "#000000") ?? .black , alpha: 0.08, x: 0, y: 6, blur: 16, spread: 0)
         
         imageSlid.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(imageSlid)
+        contentUIView.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(contentUIView)
+        contentUIView.addSubview(imageSlid)
         
         NSLayoutConstraint.activate([
-            imageSlid.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageSlid.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            imageSlid.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageSlid.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            // ContentUIView
+            contentUIView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            contentUIView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20),
+            contentUIView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
+            contentUIView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 20),
+            
+            imageSlid.topAnchor.constraint(equalTo: contentUIView.topAnchor),
+            imageSlid.leadingAnchor.constraint(equalTo: contentUIView.leadingAnchor),
+            imageSlid.trailingAnchor.constraint(equalTo: contentUIView.trailingAnchor),
+            imageSlid.bottomAnchor.constraint(equalTo: contentUIView.bottomAnchor)
         ])
     }
     

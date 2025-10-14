@@ -63,3 +63,195 @@ extension UIViewController {
         barButton.customView?.widthAnchor.constraint(equalToConstant: widthAnchor).isActive = true
     }
 }
+
+extension UIColor {
+    //Convert to Hex
+    public convenience init?(hexString: String, alpha: CGFloat = 1.0) {
+        var hexFormatted: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
+        
+        if hexFormatted.hasPrefix("#") {
+            hexFormatted = String(hexFormatted.dropFirst())
+        }
+        
+        assert(hexFormatted.count == 6, "Invalid hex code used.")
+        
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
+        
+        self.init(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: alpha
+        )
+    }
+}
+
+extension CALayer {
+  func applySketchShadow(
+    color: UIColor = .black,
+    alpha: Float = 0.08,
+    x: CGFloat = 0,
+    y: CGFloat = 14,
+    blur: CGFloat = 32,
+    spread: CGFloat = 0)
+    {
+        masksToBounds = false
+        shadowColor = color.cgColor
+        shadowOpacity = alpha
+        shadowOffset = CGSize(width: x, height: y)
+        shadowRadius = blur / 2.0
+        if spread == 0 {
+          shadowPath = nil
+        } else {
+          let dx = -spread
+          let rect = bounds.insetBy(dx: dx, dy: dx)
+          shadowPath = UIBezierPath(rect: rect).cgPath
+        }
+      }
+}
+
+extension UIView {
+    @IBInspectable
+    var borderViewWidth: CGFloat {
+        get {
+            return layer.borderWidth
+        }
+        set {
+            layer.borderWidth = newValue
+        }
+    }
+    
+    @IBInspectable
+    var borderViewColor: UIColor? {
+        get {
+            if let color = layer.borderColor {
+                return UIColor(cgColor: color)
+            }
+            return nil
+        }
+        set {
+            if let color = newValue {
+                layer.borderColor = color.cgColor
+            } else {
+                layer.borderColor = nil
+            }
+        }
+    }
+    @IBInspectable
+    var cornerAllRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+        }
+    }
+    
+    @IBInspectable
+    var cornerTopRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            if #available(iOS 11.0, *) {
+                layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+    }
+    
+    @IBInspectable
+    var cornerBottomRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            if #available(iOS 11.0, *) {
+                layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+    }
+    
+    @IBInspectable
+    var cornerLeftRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            if #available(iOS 11.0, *) {
+                layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+    }
+    
+    @IBInspectable
+    var cornerRightRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            if #available(iOS 11.0, *) {
+                layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+    }
+    
+    @IBInspectable
+    var shadowRadius: CGFloat {
+        get {
+            return layer.shadowRadius
+        }
+        set {
+            layer.shadowRadius = newValue
+        }
+    }
+    
+    @IBInspectable
+    var shadowOpacity: Float {
+        get {
+            return layer.shadowOpacity
+        }
+        set {
+            layer.shadowOpacity = newValue
+        }
+    }
+    
+    @IBInspectable
+    var shadowOffset: CGSize {
+        get {
+            return layer.shadowOffset
+        }
+        set {
+            layer.shadowOffset = newValue
+        }
+    }
+    
+    @IBInspectable
+    var shadowColor: UIColor? {
+        get {
+            if let color = layer.shadowColor {
+                return UIColor(cgColor: color)
+            }
+            return nil
+        }
+        set {
+            if let color = newValue {
+                layer.shadowColor = color.cgColor
+            } else {
+                layer.shadowColor = nil
+            }
+        }
+    }
+}
