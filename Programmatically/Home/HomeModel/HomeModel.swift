@@ -14,5 +14,22 @@ enum HomeType: Int, CaseIterable {
     case MAINLIST
 }
 struct HomeModel {
+    let headerList  : String?
+    let eventList   : [EventList]?
+    let bankList    : [BankList]?
+    let mainList    : [MainList]?
     
+    struct EventList {
+        let title       : String?
+    }
+    
+    struct BankList {
+        let imageCoin       : String?
+        let currency        : String?
+        let amount          : Double?
+    }
+    
+    struct MainList {
+        let imageList       : String?
+    }
 }

@@ -10,15 +10,8 @@ import UIKit
 class HomeViewController: UIViewController {
     let tableView = UITableView(frame: .zero, style: .grouped)
     
-    let paymentOptions = [
-            ("내계좌 결제", "하나은행 (1234)", "결제"),
-            ("비플머니", "265,273원", "결제")
-        ]
-    let events = [
-        ("비플월렛 소식", "내코인(USDT, USDC) 이제 제로페이로 바로 쓰자!", "💱"),
-        ("상품권 소식", "친구 추천하고 신세계상품권 10만원 받기", "🎁")
-    ]
-
+    lazy var homeVM = HomeViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -46,7 +39,7 @@ class HomeViewController: UIViewController {
     }
     
     private func registerCell() {
-        tableView.register(EventCell.self, forCellReuseIdentifier: "MainBannerCell")
+        tableView.register(MainBannerCell.self, forCellReuseIdentifier: "MainBannerCell")
         tableView.register(PaymentOptionCell.self, forCellReuseIdentifier: "PaymentOptionCell")
         tableView.register(EventCell.self, forCellReuseIdentifier: "EventCell")
     }
@@ -59,57 +52,59 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return HomeType.allCases.count
+        return homeVM.data.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let mainSection = HomeType(rawValue: section)
+        let mainSection = HomeType(rawValue: homeVM.data[section].mainSection)
         switch mainSection {
         case .EVENT     : return 1
-        case .BANKLIST  : return paymentOptions.count
+        case .BANKLIST  : return (self.homeVM.data[section].value as? [HomeModel.BankList])?.count ?? 0
         case .MAINTITLE : return 1
-        case .MAINLIST  : return events.count
+        case .MAINLIST  : return (self.homeVM.data[section].value as? [HomeModel.MainList])?.count ?? 0
         case .none      : return 0
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let mainSection = HomeType(rawValue: indexPath.section)else {
+        guard let mainSection = HomeType(rawValue: homeVM.data[indexPath.section].mainSection)else {
             return UITableViewCell()
         }
         switch mainSection{
         case .EVENT:
-            let cell = UITableViewCell()
-            let label = UILabel()
-            label.text = "비플월렛, 코인도 충전 가능!\n제로페이 가맹점 어디서나!"
-            label.numberOfLines = 0
-            label.font = UIFont.systemFont(ofSize: 16)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            cell.contentView.addSubview(label)
-            cell.contentView.backgroundColor = UIColor.systemGray6
-            cell.contentView.layer.cornerRadius = 12
-            NSLayoutConstraint.activate([
-                label.topAnchor.constraint(equalTo: cell.contentView.topAnchor, constant: 16),
-                label.leftAnchor.constraint(equalTo: cell.contentView.leftAnchor, constant: 16),
-                label.rightAnchor.constraint(equalTo: cell.contentView.rightAnchor, constant: -16),
-                label.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor, constant: -16)
-            ])
+            let cell = tableView.dequeueReusableCell(withIdentifier: "MainBannerCell", for: indexPath) as! MainBannerCell
+            cell.configure(items: self.homeVM.data[indexPath.section].value as? [HomeModel.EventList] ?? [])
             return cell
+            
         case .BANKLIST:
             let cell = tableView.dequeueReusableCell(withIdentifier: "PaymentOptionCell", for: indexPath) as! PaymentOptionCell
-            let data = paymentOptions[indexPath.row]
-            cell.configure(title: data.0, subtitle: data.1, buttonTitle: data.2)
+            let item = self.homeVM.data[indexPath.section].value as? [HomeModel.BankList] ?? []
+            cell.configure(items: item[indexPath.row], indexPath: indexPath.row, countItem: item.count)
             return cell
         case .MAINTITLE:
             let cell = UITableViewCell()
             let label = UILabel()
-            label.text = "비플월렛, 코인도 충전 가능!\n제로페이 가맹점 어디서나!"
+            label.text = "이벤트"
             return cell
         case .MAINLIST:
             let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell", for: indexPath) as! EventCell
-            let data = events[indexPath.row]
-            cell.configure(title: data.0, subtitle: data.1, icon: data.2)
+            let item = self.homeVM.data[indexPath.section].value as? [HomeModel.MainList] ?? []
+            cell.configure(items: item[indexPath.row])
             return cell
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard let mainSection = HomeType(rawValue: indexPath.section)else {return CGFloat()}
+        switch mainSection{
+        case .EVENT:
+            return 80
+        case .BANKLIST:
+            return 93
+        case .MAINTITLE:
+            return 89
+        case .MAINLIST:
+            return 80
         }
     }
 }

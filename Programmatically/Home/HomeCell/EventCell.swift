@@ -8,10 +8,8 @@
 import UIKit
 
 class EventCell: UITableViewCell {
-    
-    let titleLabel = UILabel()
-    let subtitleLabel = UILabel()
-    let iconLabel = UILabel()
+
+    let imageSlid = UIImageView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -24,36 +22,18 @@ class EventCell: UITableViewCell {
         contentView.backgroundColor = UIColor.systemGray6
         contentView.layer.cornerRadius = 12
         
-        titleLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        subtitleLabel.font = UIFont.systemFont(ofSize: 16)
-        subtitleLabel.numberOfLines = 0
-        iconLabel.font = UIFont.systemFont(ofSize: 28)
-        
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        iconLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(subtitleLabel)
-        contentView.addSubview(iconLabel)
+        imageSlid.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(imageSlid)
         
         NSLayoutConstraint.activate([
-            iconLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            iconLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -16),
-            iconLabel.widthAnchor.constraint(equalToConstant: 40),
-            
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            titleLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 16),
-            
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            subtitleLabel.leftAnchor.constraint(equalTo: titleLabel.leftAnchor),
-            subtitleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-            subtitleLabel.rightAnchor.constraint(equalTo: iconLabel.leftAnchor, constant: -8)
+            imageSlid.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageSlid.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageSlid.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            imageSlid.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
     
-    func configure(title: String, subtitle: String, icon: String) {
-        titleLabel.text = title
-        subtitleLabel.text = subtitle
-        iconLabel.text = icon
+    func configure(items: HomeModel.MainList) {
+        imageSlid.image = UIImage(named: items.imageList ?? "")
     }
 }

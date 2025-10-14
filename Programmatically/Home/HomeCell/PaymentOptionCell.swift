@@ -9,20 +9,33 @@ import UIKit
 
 class PaymentOptionCell: UITableViewCell {
     
-    let titleLabel = UILabel()
-    let subtitleLabel = UILabel()
-    let payButton = UIButton(type: .system)
+    let profileView     = UIView()
+    let titleLabel      = UILabel()
+    let subtitleLabel   = UILabel()
+    let payButton       = UIButton(type: .system)
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
     }
     
     required init?(coder: NSCoder) { fatalError() }
     
-    func setupViews() {
+    func setupViews(indexPath: Int, countItem: Int) {
         contentView.backgroundColor = UIColor.systemGray6
-        contentView.layer.cornerRadius = 12
+        if countItem == 1 {
+            contentView.layer.maskedCorners     = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            contentView.layer.cornerRadius = 12
+        } else {
+            if indexPath == 0 {
+                contentView.layer.maskedCorners     = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+                contentView.layer.cornerRadius      = 12
+            }else if indexPath == countItem - 1 {
+                contentView.layer.maskedCorners     = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+                contentView.layer.cornerRadius      = 12
+            }else{
+                contentView.layer.cornerRadius      = 0
+            }
+        }
         
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         subtitleLabel.font = UIFont.systemFont(ofSize: 14)
@@ -31,21 +44,31 @@ class PaymentOptionCell: UITableViewCell {
         payButton.backgroundColor = UIColor.systemBlue
         payButton.tintColor = .white
         payButton.layer.cornerRadius = 6
-        payButton.translatesAutoresizingMaskIntoConstraints = false
+        profileView.backgroundColor = UIColor.red
         
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(subtitleLabel)
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        
+        payButton.translatesAutoresizingMaskIntoConstraints = false
+        profileView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(profileView)
+        contentView.addSubview(stackView)
         contentView.addSubview(payButton)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            titleLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 16),
+            profileView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            profileView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 24),
+            profileView.widthAnchor.constraint(equalToConstant: 45),
+            profileView.heightAnchor.constraint(equalToConstant: 45),
             
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            subtitleLabel.leftAnchor.constraint(equalTo: titleLabel.leftAnchor),
-            subtitleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            stackView.topAnchor.constraint(equalTo: profileView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: profileView.bottomAnchor),
+            stackView.leftAnchor.constraint(equalTo: profileView.rightAnchor, constant: 20),
             
             payButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             payButton.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -16),
@@ -54,10 +77,17 @@ class PaymentOptionCell: UITableViewCell {
         ])
     }
     
-    func configure(title: String, subtitle: String, buttonTitle: String) {
-        titleLabel.text = title
-        subtitleLabel.text = subtitle
-        payButton.setTitle(buttonTitle, for: .normal)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        profileView.layer.cornerRadius = profileView.frame.height / 2
+        profileView.clipsToBounds = true
+    }
+    
+    func configure(items: HomeModel.BankList, indexPath: Int, countItem: Int) {
+        setupViews(indexPath: indexPath, countItem: countItem)
+        titleLabel.text = items.currency
+        subtitleLabel.text = "\(items.amount ?? 0)"
+        payButton.setTitle("Pay", for: .normal)
     }
     
 }
