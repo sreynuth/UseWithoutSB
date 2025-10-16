@@ -255,3 +255,79 @@ extension UIView {
         }
     }
 }
+
+extension UIView {
+    
+    enum ShadowPosition {
+        case topLeftRight
+        case leftRight
+        case bottomLeftRight
+        case all
+    }
+    
+    func addShadow(
+        position: ShadowPosition,
+        color: UIColor = .black,
+        opacity: Float = 0.08,
+        radius: CGFloat = 12,
+        shadowDepth: CGFloat = 6
+    ) {
+        layer.masksToBounds = false
+        layer.shadowColor = color.cgColor
+        layer.shadowOpacity = opacity
+        layer.shadowRadius = radius / 2.0
+        layer.shadowOffset = .zero
+        
+        let width = bounds.width
+        let height = bounds.height
+        let path = UIBezierPath()
+        
+        switch position {
+        case .topLeftRight:
+            // Top side
+            path.append(UIBezierPath(rect: CGRect(x: -shadowDepth, y: 0,
+                                                  width: width + shadowDepth * 2,
+                                                  height: shadowDepth)))
+            // Left side
+            path.append(UIBezierPath(rect: CGRect(x: -shadowDepth, y: 0,
+                                                  width: shadowDepth,
+                                                  height: height)))
+            // Right side
+            path.append(UIBezierPath(rect: CGRect(x: width, y: 0,
+                                                  width: shadowDepth,
+                                                  height: height)))
+            
+        case .leftRight:
+            // Left side
+            path.append(UIBezierPath(rect: CGRect(x: -shadowDepth, y: 0,
+                                                  width: shadowDepth,
+                                                  height: height)))
+            // Right side
+            path.append(UIBezierPath(rect: CGRect(x: width, y: 0,
+                                                  width: shadowDepth,
+                                                  height: height)))
+            
+        case .bottomLeftRight:
+            // Bottom side
+            path.append(UIBezierPath(rect: CGRect(x: 0, y: height,
+                                                  width: width,
+                                                  height: shadowDepth)))
+            // Left side
+            path.append(UIBezierPath(rect: CGRect(x: -shadowDepth, y: 0,
+                                                  width: shadowDepth,
+                                                  height: height + shadowDepth)))
+            // Right side
+            path.append(UIBezierPath(rect: CGRect(x: width, y: 0,
+                                                  width: shadowDepth,
+                                                  height: height + shadowDepth)))
+        case .all:
+            // Full shadow on all sides
+            path.append(UIBezierPath(rect: CGRect(x: -shadowDepth,
+                                                  y: -shadowDepth,
+                                                  width: width + shadowDepth * 2,
+                                                  height: height + shadowDepth * 2)))
+        }
+        
+        layer.shadowPath = path.cgPath
+    }
+}

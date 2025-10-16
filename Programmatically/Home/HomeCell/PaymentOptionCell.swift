@@ -9,6 +9,11 @@ import UIKit
 
 class PaymentOptionCell: UITableViewCell {
     
+    // MARK: - Public
+    var indexPath       : Int?
+    var countItem       : Int?
+    
+    // MARK: - Views
     let contentUIView    = UIView()
     let profileView      = UIView()
 
@@ -47,13 +52,14 @@ class PaymentOptionCell: UITableViewCell {
         let stack = UIStackView(arrangedSubviews: [titleLbl, subtitleLabel])
         stack.axis = .vertical
         stack.spacing = 4
-        stack.alignment = .fill
+        stack.alignment = .leading
         stack.distribution = .fill
         
         stack.translatesAutoresizingMaskIntoConstraints     = false
         return stack
     }()
     
+    // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
@@ -61,6 +67,7 @@ class PaymentOptionCell: UITableViewCell {
     
     required init?(coder: NSCoder) { fatalError() }
     
+    // MARK: - Layout
     func setupViews() {
         
         contentUIView.translatesAutoresizingMaskIntoConstraints = false
@@ -72,6 +79,7 @@ class PaymentOptionCell: UITableViewCell {
         contentUIView.addSubview(stackView)
         contentUIView.addSubview(payButton)
         
+        // card inset inside cell (gives visible gap between rows)
         NSLayoutConstraint.activate([
             // ContentUIView
             contentUIView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -102,36 +110,48 @@ class PaymentOptionCell: UITableViewCell {
             payButton.widthAnchor.constraint(equalToConstant: 60),
             payButton.heightAnchor.constraint(equalToConstant: 32)
         ])
+        
+        contentUIView.backgroundColor           = UIColor(hexString: "#FFFFFF")
+        contentUIView.layer.shadowRadius        = 12
+        contentUIView.layer.masksToBounds       = false
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        // circular profile
         profileView.layer.cornerRadius = profileView.frame.height / 2
+        profileView.backgroundColor = UIColor(red: 0.18, green: 0.49, blue: 0.98, alpha: 1)
         profileView.clipsToBounds = true
+
+        checkUIView()
     }
     
-    func checkUIView(indexPath: Int, countItem: Int) {
-        contentUIView.backgroundColor           = UIColor(hexString: "#FFFFFF")
-        contentUIView.layer.shadowRadius        = 12
-        contentUIView.layer.masksToBounds       = false
-        contentUIView.layer.applySketchShadow(color: UIColor(hexString: "#000000") ?? .black , alpha: 0.08, x: 0, y: 6, blur: 16, spread: 0)
-        
-        if countItem == 1 {
+    // Check UI shadow
+    func checkUIView() {
+        if self.countItem == 1 {
             contentUIView.cornerAllRadius         = 12
+            contentUIView.addShadow(position: .all)
         } else {
-            if indexPath == 0 {
+            if self.indexPath == 0 { // First row
                 contentUIView.cornerTopRadius           = 12
-            }else if indexPath == countItem - 1 {
+                contentUIView.addShadow(position: .topLeftRight)
+                
+            }else if self.indexPath == (self.countItem ?? 0) - 1 { // Last row
                 contentUIView.cornerBottomRadius        = 12
-            }else{
+                contentUIView.addShadow(position: .bottomLeftRight)
+                
+            }else{ // Center row
                 contentUIView.cornerAllRadius           = 0
-                contentUIView.shadowOffset              = CGSize(width: 0, height: 0)
+                contentUIView.addShadow(position: .leftRight)
             }
         }
     }
     
+    
     func configure(items: HomeModel.BankList, indexPath: Int, countItem: Int) {
-        checkUIView(indexPath: indexPath, countItem: countItem)
+        self.indexPath = indexPath
+        self.countItem = countItem
         titleLbl.text = items.currency
         subtitleLabel.text = "\(items.amount ?? 0)"
         payButton.setTitle("Pay", for: .normal)
