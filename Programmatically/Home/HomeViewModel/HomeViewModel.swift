@@ -21,15 +21,15 @@ class HomeViewModel {
     func initData() {
         self.data.removeAll()
         
-        // Event Banner
-        var eventList   = [HomeModel.EventList]()
+        // Banner Banner
+        var bannerList   = [HomeModel.BannerList]()
         let eventKoList = ["eventbanner_Ko_1", "eventbanner_Ko_2", "eventbanner_Ko_3"]
         let bannerEng   = ["mainbanner_Eng_1", "mainbanner_Eng_2", "mainbanner_Eng_3"]
         
         for bnrImgItem in bannerEng {
-            eventList.append(HomeModel.EventList(imageList: bnrImgItem))
+            bannerList.append(HomeModel.BannerList(imageList: bnrImgItem))
         }
-        self.data.append(CustomMainData(mainSection: HomeType.EVENT.rawValue, value: eventList))
+        self.data.append(CustomMainData(mainSection: HomeType.BANNER.rawValue, value: bannerList))
         
         // Bank List
         var bankList    = [HomeModel.BankList]()
@@ -39,15 +39,15 @@ class HomeViewModel {
         self.data.append(CustomMainData(mainSection: HomeType.BANKLIST.rawValue, value: bankList))
         
         // Main Title
-        let mainTitle = [HomeModel(headerList: "이벤트", eventList: nil, bankList: nil, mainList: nil)]
-        self.data.append(CustomMainData(mainSection: HomeType.MAINTITLE.rawValue, value: mainTitle))
+        let eventTitle = [HomeModel(headerList: "이벤트", eventList: nil, bankList: nil, mainList: nil)]
+        self.data.append(CustomMainData(mainSection: HomeType.EVENTTITLE.rawValue, value: eventTitle))
         
-        // Main List
-        var mainList    = [HomeModel.MainList]()
+        // Event List
+        var eventList    = [HomeModel.EventList]()
         for bnrImgItem in eventKoList {
-            mainList.append(HomeModel.MainList(imageList: bnrImgItem))
+            eventList.append(HomeModel.EventList(imageList: bnrImgItem))
         }
-        self.data.append(CustomMainData(mainSection: HomeType.MAINLIST.rawValue, value: mainList))
+        self.data.append(CustomMainData(mainSection: HomeType.EVENTLIST.rawValue, value: eventList))
     }
     
     

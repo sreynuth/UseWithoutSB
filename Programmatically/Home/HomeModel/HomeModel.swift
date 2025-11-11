@@ -8,18 +8,18 @@
 import Foundation
 
 enum HomeType: Int, CaseIterable {
-    case EVENT
+    case BANNER
     case BANKLIST
-    case MAINTITLE
-    case MAINLIST
+    case EVENTTITLE
+    case EVENTLIST
 }
 struct HomeModel {
     let headerList  : String?
-    let eventList   : [EventList]?
+    let eventList   : [BannerList]?
     let bankList    : [BankList]?
-    let mainList    : [MainList]?
+    let mainList    : [EventList]?
     
-    struct EventList {
+    struct BannerList {
         let imageList       : String?
     }
     
@@ -29,7 +29,7 @@ struct HomeModel {
         let amount          : Double?
     }
     
-    struct MainList {
+    struct EventList {
         let imageList       : String?
     }
 }

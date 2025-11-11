@@ -59,10 +59,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let mainSection = HomeType(rawValue: homeVM.data[section].mainSection)
         switch mainSection {
-        case .EVENT     : return 1
+        case .BANNER     : return 1
         case .BANKLIST  : return (self.homeVM.data[section].value as? [HomeModel.BankList])?.count ?? 0
-        case .MAINTITLE : return 1
-        case .MAINLIST  : return (self.homeVM.data[section].value as? [HomeModel.MainList])?.count ?? 0
+        case .EVENTTITLE, .EVENTLIST : return 1
         case .none      : return 0
         }
     }
@@ -72,9 +71,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         switch mainSection{
-        case .EVENT:
+        case .BANNER:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MainBannerCell", for: indexPath) as! MainBannerCell
-            cell.configure(items: self.homeVM.data[indexPath.section].value as? [HomeModel.EventList] ?? [])
+            cell.configure(items: self.homeVM.data[indexPath.section].value as? [HomeModel.BannerList] ?? [])
             cell.selectionStyle = .none
             return cell
             
@@ -84,15 +83,15 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             cell.configure(items: item[indexPath.row], indexPath: indexPath.row, countItem: item.count)
             cell.selectionStyle = .none
             return cell
-        case .MAINTITLE:
+        case .EVENTTITLE:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MainTitleCell", for: indexPath) as! MainTitleCell
             cell.configure(with: "이벤트")
             cell.selectionStyle = .none
             return cell
-        case .MAINLIST:
+        case .EVENTLIST:
             let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell", for: indexPath) as! EventCell
-            let item = self.homeVM.data[indexPath.section].value as? [HomeModel.MainList] ?? []
-            cell.configure(items: item[indexPath.row])
+            let item = self.homeVM.data[indexPath.section].value as? [HomeModel.EventList] ?? []
+            cell.items = item
             cell.selectionStyle = .none
             return cell
         }
@@ -101,7 +100,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let mainSection = HomeType(rawValue: indexPath.section)else {return CGFloat()}
         switch mainSection{
-        case .EVENT:
+        case .BANNER:
             let wCell = UIScreen.main.bounds.width - 40
             let aspectRatio: CGFloat = (86/335)
             let hCell = wCell * aspectRatio
@@ -120,10 +119,21 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             } else {
                 return 60
             }
-        case .MAINTITLE:
+        case .EVENTTITLE:
             return 56
-        case .MAINLIST:
-            return 100
+        case .EVENTLIST:
+            let eventCount = (self.homeVM.data[indexPath.section].value as? [HomeModel.EventList])?.count ?? 0
+            let wCell = UIScreen.main.bounds.width - 40
+            let aspectRatio: CGFloat = (126/335)
+            let hCell = (wCell * aspectRatio)
+            let spacing = 16
+            let bottomPadding = 32.0
+            let dynamicHeight = CGFloat(hCell * CGFloat(eventCount))
+            let totalSpacing = CGFloat(spacing * (eventCount - 1))
+            
+            let totalHeight = dynamicHeight + totalSpacing + bottomPadding
+            
+            return CGFloat(totalHeight)
         }
     }
 }

@@ -35,7 +35,12 @@ class BannerCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configure(items: HomeModel.EventList) {
+    func configure(items: HomeModel.BannerList) {
         bannerImageView.image = UIImage(named: items.imageList ?? "")
     }
+    
+    func configureEventList(items: HomeModel.EventList) {
+        bannerImageView.image = UIImage(named: items.imageList ?? "")
+    }
+    
 }

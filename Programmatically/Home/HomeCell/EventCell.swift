@@ -8,9 +8,26 @@
 import UIKit
 
 class EventCell: UITableViewCell {
+    
+    let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical // horizontal scrolling
+        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = .clear
+        cv.showsHorizontalScrollIndicator = false
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        return cv
+    }()
 
-    let imageSlid = UIImageView()
-    let contentUIView = UIView()
+    private let imageSlid: UIImageView = {
+        let view = UIImageView()
+        view.contentMode                   = .scaleAspectFill
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    var items: [HomeModel.EventList] = []
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -20,32 +37,43 @@ class EventCell: UITableViewCell {
     required init?(coder: NSCoder) { fatalError() }
     
     func setupViews() {
-        contentUIView.cornerAllRadius           = 12
-        contentUIView.layer.masksToBounds       = true
-        contentUIView.backgroundColor           = UIColor(hexString: "#D9D9D9")
-        imageSlid.contentMode                   = .scaleAspectFill
+        contentView.addSubview(collectionView)
+        collectionView.addSubview(imageSlid)
         
-        imageSlid.translatesAutoresizingMaskIntoConstraints = false
-        contentUIView.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentView.addSubview(contentUIView)
-        contentUIView.addSubview(imageSlid)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(BannerCollectionViewCell.self, forCellWithReuseIdentifier: "BannerCollectionViewCell")
         
         NSLayoutConstraint.activate([
-            // ContentUIView
-            contentUIView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            contentUIView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20),
-            contentUIView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
-            contentUIView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14),
+            collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            collectionView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20),
+            collectionView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
+            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14),
             
-            imageSlid.topAnchor.constraint(equalTo: contentUIView.topAnchor),
-            imageSlid.leftAnchor.constraint(equalTo: contentUIView.leftAnchor),
-            imageSlid.rightAnchor.constraint(equalTo: contentUIView.rightAnchor),
-            imageSlid.bottomAnchor.constraint(equalTo: contentUIView.bottomAnchor)
+            imageSlid.topAnchor.constraint(equalTo: collectionView.topAnchor),
+            imageSlid.leftAnchor.constraint(equalTo: collectionView.leftAnchor),
+            imageSlid.rightAnchor.constraint(equalTo: collectionView.rightAnchor),
+            imageSlid.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor)
         ])
     }
+}
+
+extension EventCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return items.count
+    }
     
-    func configure(items: HomeModel.MainList) {
-        imageSlid.image = UIImage(named: items.imageList ?? "")
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerCollectionViewCell", for: indexPath) as! BannerCollectionViewCell
+        let item = items[indexPath.item]
+        cell.configureEventList(items: item)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let wCell = UIScreen.main.bounds.width - 40
+        let aspectRatio: CGFloat = (126/335)
+        let hCell = wCell * aspectRatio
+        return CGSize(width: wCell, height: hCell)
     }
 }

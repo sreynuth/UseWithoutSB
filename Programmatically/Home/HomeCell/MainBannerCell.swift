@@ -40,7 +40,7 @@ class MainBannerCell: UITableViewCell {
     }()
     
     // Data for collection view
-    private var items               : [HomeModel.EventList] = []
+    private var items               : [HomeModel.BannerList] = []
     private var bannerTimer         : Timer?
     private var currentIndexPath    : IndexPath = IndexPath(item: 0, section: 0)
     private var moveBannerDirection : Int = 1
@@ -128,7 +128,7 @@ class MainBannerCell: UITableViewCell {
 
     }
     
-    func configure(items: [HomeModel.EventList]) {
+    func configure(items: [HomeModel.BannerList]) {
         self.items = items
         self.badgeLabel.text =  ("\(self.currentIndexPath.row + 1) / \(items.count)")
         self.collectionView.isScrollEnabled = (self.items.count) > 1
