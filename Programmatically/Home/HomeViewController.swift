@@ -41,6 +41,7 @@ class HomeViewController: UIViewController {
     private func registerCell() {
         tableView.register(MainBannerCell.self, forCellReuseIdentifier: "MainBannerCell")
         tableView.register(PaymentOptionCell.self, forCellReuseIdentifier: "PaymentOptionCell")
+        tableView.register(MainTitleCell.self, forCellReuseIdentifier: "MainTitleCell")
         tableView.register(EventCell.self, forCellReuseIdentifier: "EventCell")
     }
     
@@ -74,22 +75,25 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         case .EVENT:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MainBannerCell", for: indexPath) as! MainBannerCell
             cell.configure(items: self.homeVM.data[indexPath.section].value as? [HomeModel.EventList] ?? [])
+            cell.selectionStyle = .none
             return cell
             
         case .BANKLIST:
             let cell = tableView.dequeueReusableCell(withIdentifier: "PaymentOptionCell", for: indexPath) as! PaymentOptionCell
             let item = self.homeVM.data[indexPath.section].value as? [HomeModel.BankList] ?? []
             cell.configure(items: item[indexPath.row], indexPath: indexPath.row, countItem: item.count)
+            cell.selectionStyle = .none
             return cell
         case .MAINTITLE:
-            let cell = UITableViewCell()
-            let label = UILabel()
-            label.text = "이벤트"
+            let cell = tableView.dequeueReusableCell(withIdentifier: "MainTitleCell", for: indexPath) as! MainTitleCell
+            cell.configure(with: "이벤트")
+            cell.selectionStyle = .none
             return cell
         case .MAINLIST:
             let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell", for: indexPath) as! EventCell
             let item = self.homeVM.data[indexPath.section].value as? [HomeModel.MainList] ?? []
             cell.configure(items: item[indexPath.row])
+            cell.selectionStyle = .none
             return cell
         }
     }
@@ -98,13 +102,28 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let mainSection = HomeType(rawValue: indexPath.section)else {return CGFloat()}
         switch mainSection{
         case .EVENT:
-            return 80
+            let wCell = UIScreen.main.bounds.width - 40
+            let aspectRatio: CGFloat = (86/335)
+            let hCell = wCell * aspectRatio
+            let topPadding = 12.0
+            return hCell + topPadding
         case .BANKLIST:
-            return 93
+            let countPayment = (self.homeVM.data[indexPath.section].value as? [HomeModel.BankList])?.count ?? 0
+            let lastRow = (countPayment - 1 == indexPath.row)
+            if indexPath.row == 0 {
+                if countPayment == 1 {
+                    return 120
+                }
+                return 90 // 0 : topShadow + 75 : item, 15 : top
+            } else if lastRow {
+                return 90
+            } else {
+                return 60
+            }
         case .MAINTITLE:
-            return 89
+            return 56
         case .MAINLIST:
-            return 80
+            return 100
         }
     }
 }

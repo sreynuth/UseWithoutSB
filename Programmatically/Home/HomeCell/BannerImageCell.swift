@@ -1,28 +1,26 @@
 //
-//  BannerCollectionViewCell.swift
+//  BannerImageCell.swift
 //  Programmatically
 //
-//  Created by Nin Sreynuth on 14/10/25.
+//  Created by Nin Sreynuth on 27/10/25.
 //
 
 import UIKit
 
-class BannerCollectionViewCell: UICollectionViewCell {
-    
+class BannerImageCell: UITableViewCell {
+
     private let bannerImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupLayout()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    required init?(coder: NSCoder) { fatalError() }
     
     private func setupLayout() {
         contentView.addSubview(bannerImageView)
@@ -31,11 +29,7 @@ class BannerCollectionViewCell: UICollectionViewCell {
             bannerImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             bannerImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bannerImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            bannerImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            bannerImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
-    }
-    
-    func configure(items: HomeModel.EventList) {
-        bannerImageView.image = UIImage(named: items.imageList ?? "")
     }
 }

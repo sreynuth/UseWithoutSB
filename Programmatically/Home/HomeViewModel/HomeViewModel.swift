@@ -23,10 +23,12 @@ class HomeViewModel {
         
         // Event Banner
         var eventList   = [HomeModel.EventList]()
-        eventList = [HomeModel.EventList(title: "비플월렛, 코인도 충전 가능!\n제로페이 가맹점 어디서나!"),
-                     HomeModel.EventList(title: "비플월렛, 코인도 충전 가능!\n제로페이 가맹점 어디서나!"),
-                     HomeModel.EventList(title: "비플월렛, 코인도 충전 가능!\n제로페이 가맹점 어디서나!"),
-                     HomeModel.EventList(title: "비플월렛, 코인도 충전 가능!\n제로페이 가맹점 어디서나!")]
+        let eventKoList = ["eventbanner_Ko_1", "eventbanner_Ko_2", "eventbanner_Ko_3"]
+        let bannerEng   = ["mainbanner_Eng_1", "mainbanner_Eng_2", "mainbanner_Eng_3"]
+        
+        for bnrImgItem in bannerEng {
+            eventList.append(HomeModel.EventList(imageList: bnrImgItem))
+        }
         self.data.append(CustomMainData(mainSection: HomeType.EVENT.rawValue, value: eventList))
         
         // Bank List
@@ -36,11 +38,15 @@ class HomeViewModel {
                     HomeModel.BankList(imageCoin: "", currency: "COIN", amount: 300)]
         self.data.append(CustomMainData(mainSection: HomeType.BANKLIST.rawValue, value: bankList))
         
+        // Main Title
+        let mainTitle = [HomeModel(headerList: "이벤트", eventList: nil, bankList: nil, mainList: nil)]
+        self.data.append(CustomMainData(mainSection: HomeType.MAINTITLE.rawValue, value: mainTitle))
+        
         // Main List
         var mainList    = [HomeModel.MainList]()
-        mainList = [HomeModel.MainList(imageList: "list"),
-                    HomeModel.MainList(imageList: "list"),
-                    HomeModel.MainList(imageList: "list")]
+        for bnrImgItem in eventKoList {
+            mainList.append(HomeModel.MainList(imageList: bnrImgItem))
+        }
         self.data.append(CustomMainData(mainSection: HomeType.MAINLIST.rawValue, value: mainList))
     }
     

@@ -20,9 +20,10 @@ class EventCell: UITableViewCell {
     required init?(coder: NSCoder) { fatalError() }
     
     func setupViews() {
-        contentUIView.layer.shadowRadius        = 12
         contentUIView.cornerAllRadius           = 12
-        contentUIView.layer.applySketchShadow(color: UIColor(hexString: "#000000") ?? .black , alpha: 0.08, x: 0, y: 6, blur: 16, spread: 0)
+        contentUIView.layer.masksToBounds       = true
+        contentUIView.backgroundColor           = UIColor(hexString: "#D9D9D9")
+        imageSlid.contentMode                   = .scaleAspectFill
         
         imageSlid.translatesAutoresizingMaskIntoConstraints = false
         contentUIView.translatesAutoresizingMaskIntoConstraints = false
@@ -35,11 +36,11 @@ class EventCell: UITableViewCell {
             contentUIView.topAnchor.constraint(equalTo: contentView.topAnchor),
             contentUIView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20),
             contentUIView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
-            contentUIView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 20),
+            contentUIView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14),
             
             imageSlid.topAnchor.constraint(equalTo: contentUIView.topAnchor),
-            imageSlid.leadingAnchor.constraint(equalTo: contentUIView.leadingAnchor),
-            imageSlid.trailingAnchor.constraint(equalTo: contentUIView.trailingAnchor),
+            imageSlid.leftAnchor.constraint(equalTo: contentUIView.leftAnchor),
+            imageSlid.rightAnchor.constraint(equalTo: contentUIView.rightAnchor),
             imageSlid.bottomAnchor.constraint(equalTo: contentUIView.bottomAnchor)
         ])
     }

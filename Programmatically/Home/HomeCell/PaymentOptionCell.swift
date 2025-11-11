@@ -69,9 +69,9 @@ class PaymentOptionCell: UITableViewCell {
     
     // MARK: - Layout
     func setupViews() {
-        
-        contentUIView.translatesAutoresizingMaskIntoConstraints = false
-        profileView.translatesAutoresizingMaskIntoConstraints   = false
+        [contentUIView, profileView, profileImg, stackView, payButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         contentView.addSubview(contentUIView)
         contentUIView.addSubview(profileView)
@@ -79,42 +79,63 @@ class PaymentOptionCell: UITableViewCell {
         contentUIView.addSubview(stackView)
         contentUIView.addSubview(payButton)
         
-        // card inset inside cell (gives visible gap between rows)
         NSLayoutConstraint.activate([
-            // ContentUIView
+            // Content UIView
             contentUIView.topAnchor.constraint(equalTo: contentView.topAnchor),
             contentUIView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20),
             contentUIView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
             contentUIView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            // Profile View
-            profileView.centerYAnchor.constraint(equalTo: contentUIView.centerYAnchor),
-            profileView.leftAnchor.constraint(equalTo: contentUIView.leftAnchor, constant: 24),
-            profileView.widthAnchor.constraint(equalToConstant: 45),
-            profileView.heightAnchor.constraint(equalToConstant: 45),
-            
-            // Image View
+            // Profile Image
             profileImg.centerXAnchor.constraint(equalTo: profileView.centerXAnchor),
             profileImg.centerYAnchor.constraint(equalTo: profileView.centerYAnchor),
             profileImg.widthAnchor.constraint(equalToConstant: 21),
             profileImg.heightAnchor.constraint(equalToConstant: 21),
             
-            // Text View
+            // Stack View
             stackView.topAnchor.constraint(equalTo: profileView.topAnchor),
             stackView.bottomAnchor.constraint(equalTo: profileView.bottomAnchor),
             stackView.leftAnchor.constraint(equalTo: profileView.rightAnchor, constant: 20),
             
-            // Pay Button View
-            payButton.centerYAnchor.constraint(equalTo: contentUIView.centerYAnchor),
+            // Pay Button
+            payButton.centerYAnchor.constraint(equalTo: profileView.centerYAnchor),
             payButton.rightAnchor.constraint(equalTo: contentUIView.rightAnchor, constant: -16),
             payButton.widthAnchor.constraint(equalToConstant: 60),
             payButton.heightAnchor.constraint(equalToConstant: 32)
         ])
         
-        contentUIView.backgroundColor           = UIColor(hexString: "#FFFFFF")
-        contentUIView.layer.shadowRadius        = 12
-        contentUIView.layer.masksToBounds       = false
+        setupProfileViewConstraints()
+        
+        contentUIView.backgroundColor = UIColor(hexString: "#FFFFFF")
+        contentUIView.layer.shadowRadius = 12
+        contentUIView.layer.masksToBounds = false
     }
+
+    // MARK: - Profile View Layout
+    private func setupProfileViewConstraints() {
+        NSLayoutConstraint.activate([
+            profileView.widthAnchor.constraint(equalToConstant: 45),
+            profileView.heightAnchor.constraint(equalToConstant: 45)
+        ])
+        
+        let leftAnchor = profileView.leftAnchor.constraint(equalTo: contentUIView.leftAnchor, constant: 24)
+        let verticalAnchor: NSLayoutConstraint
+        
+        if countItem == 1 {
+            verticalAnchor = profileView.centerYAnchor.constraint(equalTo: contentUIView.centerYAnchor)
+        } else {
+            if indexPath == 0 {
+                verticalAnchor = profileView.bottomAnchor.constraint(equalTo: contentUIView.bottomAnchor)
+            } else if self.indexPath == (self.countItem ?? 0) - 1{
+                verticalAnchor = profileView.topAnchor.constraint(equalTo: contentUIView.topAnchor)
+            }else {
+                verticalAnchor = profileView.centerYAnchor.constraint(equalTo: contentUIView.centerYAnchor)
+            }
+        }
+        
+        NSLayoutConstraint.activate([leftAnchor, verticalAnchor])
+    }
+
     
     override func layoutSubviews() {
         super.layoutSubviews()

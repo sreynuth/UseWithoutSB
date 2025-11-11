@@ -20,7 +20,7 @@ struct HomeModel {
     let mainList    : [MainList]?
     
     struct EventList {
-        let title       : String?
+        let imageList       : String?
     }
     
     struct BankList {
