@@ -20,6 +20,7 @@ class HomeViewController: UIViewController {
         self.setupNavigation()
         self.registerCell()
         self.setupTableView()
+        self.requestMG001()
         
     }
     
@@ -48,6 +49,24 @@ class HomeViewController: UIViewController {
     private func setupNavigation() {
         self.setupHomeMenuView(withTarget: self, title: "비플월렛", leftAction: nil, rightAction: nil)
         self.navigationController?.navigationBar.barTintColor = .white
+    }
+    
+    private func requestMG001() {
+        homeVM.fetchMG001(showLoading: false) { (error) in
+            guard error == nil else {
+                if error?.code == -1009 { // 네트워크 통신 에러 -> 기본팝업_type3a 으로 변경
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        print("error: -1009")
+                    }
+                }
+                else {
+                    print("close App")
+                }
+                return
+            }
+            
+            print("==============================** Success **==============================")
+        }
     }
 }
 

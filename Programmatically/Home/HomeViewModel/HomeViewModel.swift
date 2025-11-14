@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Network
 
 struct CustomMainData<T> {
     var mainSection      : HomeType.RawValue
@@ -49,6 +50,24 @@ class HomeViewModel {
         }
         self.data.append(CustomMainData(mainSection: HomeType.EVENTLIST.rawValue, value: eventList))
     }
+    
+    @MainActor func fetchMG001(showLoading: Bool, completion: @escaping (NSError?) -> Void) {
+        DataAccess().fetchGateWay(id: API.MG001, body: MG001Model.Request(), responseType: Response<MG001Model.MGResponse>.self, shouldShowLoading: showLoading) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(error)
+            case .success(let data):
+                if let mgData = data.RESP_DATA?._tran_res_data.first {
+                    ShareConstant.shared.mg001Data = mgData
+                    completion(nil)
+                } else {
+                    let mgError = NSError(domain: "ERROR_MG", code: 1168, userInfo: [NSLocalizedDescriptionKey: Network_Message.errorOccurredWhileProcessing])
+                    completion(mgError)
+                }
+            }
+        }
+    }
+    
     
     
 }

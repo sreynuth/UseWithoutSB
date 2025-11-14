@@ -331,3 +331,63 @@ extension UIView {
         layer.shadowPath = path.cgPath
     }
 }
+
+
+extension Encodable {
+    func asJSONString() -> String? {
+        let jsonEncoder = JSONEncoder()
+        do {
+            let jsonData = try jsonEncoder.encode(self)
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            return jsonString
+        } catch {
+            return nil
+        }
+    }
+}
+
+extension Data {
+    // - For Print Response Data
+    var prettyPrinted: String {
+        return MyJSON.prettyPrint(object: self.dataToDic)
+    }
+    
+    var dataToDic: NSDictionary {
+        guard let dic: NSDictionary = (try? JSONSerialization.jsonObject(with: self, options: [])) as? NSDictionary else {
+            return [:]
+        }
+        
+        return dic
+    }
+}
+
+struct MyJSON {
+    static func prettyPrint(object: AnyObject) -> String {
+        if JSONSerialization.isValidJSONObject(object) {
+            if let data = try? JSONSerialization.data(withJSONObject: object, options: JSONSerialization.WritingOptions.prettyPrinted) {
+                if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
+                    return string as String
+                }
+            }
+        }
+        return ""
+    }
+    static func convertDicToJSONString(_ dic: [String:Any]) -> String? {
+        do {
+            let data : Data = try JSONSerialization.data(withJSONObject: dic, options: JSONSerialization.WritingOptions(rawValue: 0))
+            let outputSt = String(data: data, encoding: .utf8)
+            return outputSt
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        } catch let randomError {
+            print(randomError.localizedDescription)
+        }
+        return nil
+    }
+}
+
+extension String {
+    func replace(of: String, with: String) -> String {
+        return self.replacingOccurrences(of: of, with: with)
+    }
+}
