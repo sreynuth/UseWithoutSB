@@ -105,6 +105,10 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         case .EVENTTITLE:
             let cell = tableView.dequeueReusableCell(withIdentifier: "MainTitleCell", for: indexPath) as! MainTitleCell
             cell.configure(with: "이벤트")
+            let counter = HomeViewModel.Counter()
+            Task {
+                print(await counter.debugPrint())
+            }
             cell.selectionStyle = .none
             return cell
         case .EVENTLIST:

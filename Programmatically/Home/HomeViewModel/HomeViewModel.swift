@@ -15,13 +15,13 @@ struct CustomMainData<T: Sendable>: Sendable {
 
 @MainActor
 class HomeViewModel: ObservableObject {
-    @Published var data: [CustomMainData<Sendable>] = []
+    @Published var data: [CustomMainData<any Sendable>] = []
     
     init() {
         initData()
     }
 
-    final func initData() {
+    func initData() {
         self.data.removeAll()
         
         // Banner Data
@@ -65,6 +65,26 @@ class HomeViewModel: ObservableObject {
         )
     }
     
+    actor Counter {
+        var count = 0
+        
+        func increment() {
+            count += 1
+        }
+        
+        func getValue() -> Int {
+            count
+        }
+        
+        nonisolated var description: String {
+            "Counter actor"
+        }
+        
+        func debugPrint() {
+            print("Inside actor:", count)
+        }
+    }
+    
     func fetchMG001(showLoading: Bool, completion: @escaping @MainActor (NSError?) -> Void) {
         Task {
             DataAccess().fetchGateWay(
@@ -99,3 +119,23 @@ class HomeViewModel: ObservableObject {
     
     
 }
+
+//actor Counter {
+//    var count = 0
+//    
+//    func increment() {
+//        count += 1
+//    }
+//    
+//    func getValue() -> Int {
+//        count
+//    }
+//    
+//    nonisolated var description: String {
+//        "Counter actor"
+//    }
+//    
+//    func debugPrint() {
+//        print("Inside actor:", count)
+//    }
+//}
