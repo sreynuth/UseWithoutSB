@@ -7,29 +7,29 @@
 
 import Foundation
 
-enum HomeType: Int, CaseIterable {
+enum HomeType: Int, CaseIterable, Sendable {
     case BANNER
     case BANKLIST
     case EVENTTITLE
     case EVENTLIST
 }
-struct HomeModel {
+struct HomeModel: Sendable {
     let headerList  : String?
     let eventList   : [BannerList]?
     let bankList    : [BankList]?
     let mainList    : [EventList]?
     
-    struct BannerList {
+    struct BannerList: Sendable {
         let imageList       : String?
     }
     
-    struct BankList {
+    struct BankList: Sendable {
         let imageCoin       : String?
         let currency        : String?
         let amount          : Double?
     }
     
-    struct EventList {
+    struct EventList: Sendable {
         let imageList       : String?
     }
 }

@@ -23,7 +23,7 @@ struct ShareConstant {
         let deviceInfo      = DeviceInfo.info
         let nma_app_ver     = deviceInfo.getAppVersion()
         let nma_plf_ver     = deviceInfo.systemVersion
-        let nma_model       = ""
+        let nma_model       = "iPhone XS Max"
         let nma_app_id      = Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String ?? ""
         let nma_app_cd      = Encryption_UserAgent.nma_app_cd
         let nma_dev_id      = deviceInfo.getUUID()

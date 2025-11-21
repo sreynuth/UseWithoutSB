@@ -15,6 +15,6 @@ struct API {
     static var MG001        : String { return "C_MG_001" }
     
     static var MG001URL     : String {
-        return "https://mg-dev.bizplay.co.kr/" + "MgGate?master_id=I_BIZ_BEPLEWALLET_v" + AppInfo.getAppVersion() + "_MG001"
+        return "https://mg-dev.bizplay.co.kr/" + "MgGate?master_id=I_BIZ_BEPLEWALLET_v" + "v1-1-4"/*AppInfo.getAppVersion()*/ + "_MG001"
     }
 }

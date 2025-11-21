@@ -265,8 +265,7 @@ class DataAccess {
             print("\n\nAPI name:", api)
             #endif
 
-//            let responseDictionary = ShareMethod.shared.convertToDictionary(jsonString: dataString)
-            var responseDictionary: [String: Any]?
+            let responseDictionary = ShareMethod.shared.convertToDictionary(jsonString: dataString)
             DispatchQueue.main.sync {
 //                responseDictionary = ShareMethod.shared.convertToDictionary(jsonString: dataString)
             }

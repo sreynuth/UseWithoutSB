@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController {
     let tableView = UITableView(frame: .zero, style: .grouped)
     
     lazy var homeVM = HomeViewModel()

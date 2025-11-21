@@ -7,12 +7,12 @@
 
 import Foundation
 
-@MainActor
-class ShareMethod {
+
+final class ShareMethod : Sendable {
     static let shared = ShareMethod()
     private init() {}
     
-    func convertToDictionary(jsonString: String) -> Dictionary<String, Any>? {
+     func convertToDictionary(jsonString: String) -> Dictionary<String, Any>? {
         guard let data = jsonString.data(using: .utf8) else { return nil }
         do {
             return try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]
