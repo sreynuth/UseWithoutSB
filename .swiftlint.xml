@@ -1,0 +1,49 @@
+disabled_rules:
+  - line_length
+  - trailing_whitespace
+
+opt_in_rules:
+  - explicit_self
+  - closure_body_length
+  - unowned_variable_capture
+  - unused_import
+  - unused_optional_binding
+
+# Swift 6 Concurrency Rules
+analyzer_rules:
+  - strict_concurrency
+  - unused_declaration
+  - unused_imports
+
+strict_concurrency:
+  severity: warning
+  allowed_safety:
+    - nonisolated
+    - Sendable
+    - global_actor
+
+included:
+  - Sources
+  - YourApp
+
+excluded:
+  - Pods
+  - Carthage
+  - SwiftLint
+
+identifier_name:
+  min_length: 2
+  max_length: 40
+  excluded:
+    - id
+    - vm
+    - db
+    - ui
+
+type_body_length:
+  warning: 300
+  error: 400
+
+file_length:
+  warning: 600
+  error: 800

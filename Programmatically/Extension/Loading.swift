@@ -16,7 +16,7 @@ final class Loading {
     
     private var containerView: UIView?
     
-    func showLoading(){
+    func showLoading() {
         let loadingView = UIView(frame: containerView?.bounds ?? CGRect())
         loadingView.backgroundColor = UIColor(white: 0, alpha: 0.4)
 

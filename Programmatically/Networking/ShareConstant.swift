@@ -16,7 +16,7 @@ struct ShareConstant {
     var mg001Data           : MG001Model.TranResData!
     
     var isShareTracking     : Bool = false
-    static var language     : LanguageCode = .Korean
+    static var language     : LanguageCode = .KOREA
     
     
     var userAgent: String {

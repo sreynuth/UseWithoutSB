@@ -7,10 +7,9 @@
 
 import Foundation
 
-
 enum LanguageCode: String {
-    case Korean     = "ko"
-    case English    = "en"
+    case KOREA     = "ko"
+    case ENGLISH   = "en"
 }
 @MainActor
 extension String {

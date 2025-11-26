@@ -1,0 +1,62 @@
+#
+#  .swiftlint.yml
+#  Programmatically
+#
+#  Created by Nin Sreynuth on 25/11/25.
+
+
+# SwiftLint Configuration
+
+disabled_rules:
+  - line_length
+  - trailing_whitespace     # Space
+  - colon                   # (:)
+
+opt_in_rules:
+  - explicit_self
+  - closure_body_length
+  - unowned_variable_capture
+  - unused_import
+  - unused_optional_binding
+
+# Swift 6 Concurrency Rules
+analyzer_rules:
+  - strict_concurrency
+  - unused_declaration
+  - unused_imports
+
+strict_concurrency:
+  severity: warning
+  allowed_safety:
+    - nonisolated
+    - Sendable
+    - global_actor
+
+included:
+  - Programmatically
+
+excluded:
+  - Pods
+  - Carthage
+  - SwiftLint
+  
+type_name:
+  allowed_symbols: "_"
+  validates_start_with_lowercase: false
+  validates_start_lowercase: false
+
+identifier_name:
+  min_length: 2
+  max_length: 40
+  allowed_symbols: "_"
+  excluded:
+    - id
+    - vm
+    - db
+    - ui
+
+type_body_length:
+  warning: 300
+  error: 400
+
+

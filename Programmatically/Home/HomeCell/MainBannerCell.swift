@@ -113,7 +113,7 @@ class MainBannerCell: UITableViewCell {
                 self.moveBannerDirection = 1
             }
         } else if self.currentIndexPath.row < (self.items.count) {
-            DispatchQueue.main.async{
+            DispatchQueue.main.async {
                 let numberOfItem = self.collectionView.numberOfItems(inSection: 0)
                 if numberOfItem > 1 {  // Protection when have only one item in section
                     self.currentIndexPath = IndexPath(item: self.currentIndexPath.row + self.moveBannerDirection, section: 0)
@@ -154,10 +154,12 @@ extension MainBannerCell: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerCollectionViewCell", for: indexPath) as! BannerCollectionViewCell
-        let item = items[indexPath.item]
-        cell.configure(items: item)
-        return cell
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerCollectionViewCell", for: indexPath) as? BannerCollectionViewCell {
+            let item = items[indexPath.item]
+            cell.configure(items: item)
+            return cell
+        }
+        return UICollectionViewCell()
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

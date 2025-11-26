@@ -58,8 +58,7 @@ final class HomeViewController: UIViewController {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         print("error: -1009")
                     }
-                }
-                else {
+                } else {
                     print("close App")
                 }
                 return
@@ -89,35 +88,39 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let mainSection = HomeType(rawValue: homeVM.data[indexPath.section].mainSection)else {
             return UITableViewCell()
         }
-        switch mainSection{
+        switch mainSection {
         case .BANNER:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MainBannerCell", for: indexPath) as! MainBannerCell
-            cell.configure(items: self.homeVM.data[indexPath.section].value as? [HomeModel.BannerList] ?? [])
-            cell.selectionStyle = .none
-            return cell
-            
-        case .BANKLIST:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "PaymentOptionCell", for: indexPath) as! PaymentOptionCell
-            let item = self.homeVM.data[indexPath.section].value as? [HomeModel.BankList] ?? []
-            cell.configure(items: item[indexPath.row], indexPath: indexPath.row, countItem: item.count)
-            cell.selectionStyle = .none
-            return cell
-        case .EVENTTITLE:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MainTitleCell", for: indexPath) as! MainTitleCell
-            cell.configure(with: "이벤트")
-            let counter = HomeViewModel.Counter()
-            Task {
-                print(await counter.debugPrint())
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "MainBannerCell", for: indexPath) as? MainBannerCell {
+                cell.configure(items: self.homeVM.data[indexPath.section].value as? [HomeModel.BannerList] ?? [])
+                cell.selectionStyle = .none
+                return cell
             }
-            cell.selectionStyle = .none
-            return cell
+        case .BANKLIST:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "PaymentOptionCell", for: indexPath) as? PaymentOptionCell {
+                let item = self.homeVM.data[indexPath.section].value as? [HomeModel.BankList] ?? []
+                cell.configure(items: item[indexPath.row], indexPath: indexPath.row, countItem: item.count)
+                cell.selectionStyle = .none
+                return cell
+            }
+        case .EVENTTITLE:
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "MainTitleCell", for: indexPath) as? MainTitleCell {
+                cell.configure(with: "이벤트")
+                let counter = HomeViewModel.Counter()
+                Task {
+                    print(await counter.debugPrint())
+                }
+                cell.selectionStyle = .none
+                return cell
+            }
         case .EVENTLIST:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell", for: indexPath) as! EventCell
-            let item = self.homeVM.data[indexPath.section].value as? [HomeModel.EventList] ?? []
-            cell.items = item
-            cell.selectionStyle = .none
-            return cell
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell", for: indexPath) as? EventCell {
+                let item = self.homeVM.data[indexPath.section].value as? [HomeModel.EventList] ?? []
+                cell.items = item
+                cell.selectionStyle = .none
+                return cell
+            }
         }
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -6,8 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2C23B7A22ED58EC300FCED41 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 2C23B7A12ED58EB600FCED41 /* .swiftlint.yml */; };
+		9E56D0A949A84BD57A4DA6E9 /* Pods_Programmatically.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97F20E31E828B2B6155F8702 /* Pods_Programmatically.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2C09A4B72E9CD3E600A540F3 /* Programmatically.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Programmatically.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C23B7A12ED58EB600FCED41 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		97F20E31E828B2B6155F8702 /* Pods_Programmatically.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Programmatically.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BBA75C69E4E0E0A827DEFD8E /* Pods-Programmatically.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Programmatically.debug.xcconfig"; path = "Target Support Files/Pods-Programmatically/Pods-Programmatically.debug.xcconfig"; sourceTree = "<group>"; };
+		C1D47F1943463815AC04D363 /* Pods-Programmatically.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Programmatically.release.xcconfig"; path = "Target Support Files/Pods-Programmatically/Pods-Programmatically.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E56D0A949A84BD57A4DA6E9 /* Pods_Programmatically.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,8 +55,11 @@
 		2C09A4AE2E9CD3E600A540F3 = {
 			isa = PBXGroup;
 			children = (
+				2C23B7A12ED58EB600FCED41 /* .swiftlint.yml */,
 				2C09A4B92E9CD3E600A540F3 /* Programmatically */,
 				2C09A4B82E9CD3E600A540F3 /* Products */,
+				BD757C9C23659F181AAB6525 /* Pods */,
+				9540685294E1A2E7AA61867C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +71,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		9540685294E1A2E7AA61867C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				97F20E31E828B2B6155F8702 /* Pods_Programmatically.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BD757C9C23659F181AAB6525 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				BBA75C69E4E0E0A827DEFD8E /* Pods-Programmatically.debug.xcconfig */,
+				C1D47F1943463815AC04D363 /* Pods-Programmatically.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -65,9 +95,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2C09A4CA2E9CD3E800A540F3 /* Build configuration list for PBXNativeTarget "Programmatically" */;
 			buildPhases = (
+				8CA6C9AFA7E8C979E3CFD7B4 /* [CP] Check Pods Manifest.lock */,
 				2C09A4B32E9CD3E600A540F3 /* Sources */,
 				2C09A4B42E9CD3E600A540F3 /* Frameworks */,
 				2C09A4B52E9CD3E600A540F3 /* Resources */,
+				2C23B7E62ED58FB100FCED41 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -77,8 +109,6 @@
 				2C09A4B92E9CD3E600A540F3 /* Programmatically */,
 			);
 			name = Programmatically;
-			packageProductDependencies = (
-			);
 			productName = Programmatically;
 			productReference = 2C09A4B72E9CD3E600A540F3 /* Programmatically.app */;
 			productType = "com.apple.product-type.application";
@@ -122,10 +152,53 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C23B7A22ED58EC300FCED41 /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2C23B7E62ED58FB100FCED41 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+		8CA6C9AFA7E8C979E3CFD7B4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Programmatically-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2C09A4B32E9CD3E600A540F3 /* Sources */ = {
@@ -140,17 +213,19 @@
 /* Begin XCBuildConfiguration section */
 		2C09A4CB2E9CD3E800A540F3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BBA75C69E4E0E0A827DEFD8E /* Pods-Programmatically.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QUGD29833Y;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Programmatically/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -168,17 +243,19 @@
 		};
 		2C09A4CC2E9CD3E800A540F3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C1D47F1943463815AC04D363 /* Pods-Programmatically.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QUGD29833Y;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Programmatically/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

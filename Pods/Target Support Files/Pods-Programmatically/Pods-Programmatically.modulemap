@@ -1,0 +1,6 @@
+framework module Pods_Programmatically {
+  umbrella header "Pods-Programmatically-umbrella.h"
+
+  export *
+  module * { export * }
+}

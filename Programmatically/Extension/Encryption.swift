@@ -5,9 +5,8 @@
 //  Created by Nin Sreynuth on 14/11/25.
 //
 
-
 class Encryption_UserAgent {
-    private init(){}
+    private init() {}
     
     //생체인증 정보가 변경되었습니다. 다시 등록해 주세요!
     //1a42751d95908c4856d0daf5b3ee7f14
