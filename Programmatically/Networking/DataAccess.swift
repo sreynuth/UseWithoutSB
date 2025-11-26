@@ -89,79 +89,12 @@ final class DataAccess {
         #endif
         return request
     }
-    
-    private func handleNetworkError(api: String, error: Error) -> NSError {
-        let nsError = error as NSError
-        let code = nsError.code
 
-        if code == -1009 {
-            return makeError(domain: "internet", code: code, message: noInternetMessage)
-        }
-
-        return makeError(domain: "unknown", code: code, message: nsError.localizedDescription)
-    }
-    
-    private func makeError(domain: String, code: Int, message: String) -> NSError {
-        return NSError(domain: domain, code: code, userInfo: [NSLocalizedDescriptionKey: message])
-    }
-    
-    func showHideLoading(isShow: Bool, isForce: Bool = false, message: String = "", delay: TimeInterval = 0.25) {
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            isShow ? Loading.shared.showLoading() : (isForce ? Loading.shared.hideLoading() : Loading.shared.delayBeforeHide(after: delay))
-        }
-    }
-    
     @MainActor
     private func makeRequest<I: Encodable>(api: String, body: I) -> URLRequest {
         return request(urlApi: api, body: body)
     }
     
-    private func handleResponse<O: Decodable>(
-        api: String,
-        dataString: String,
-        shouldShowLoading: Bool,
-        delay: TimeInterval,
-        responseType: O.Type,
-        completion: @escaping (Result<O, NSError>) -> Void
-    ) {
-
-        guard let json = ShareMethod.shared.convertToDictionary(jsonString: dataString) else {
-            completion(.failure(makeError(domain: "json", code: 0, message: decodeJsonErrorMessage)))
-            return
-        }
-
-        // 1. COMMON_HEAD style API
-        if let common = json["COMMON_HEAD"] as? [String:Any] {
-            handleCommonHeadAPI(
-                api: api,
-                common: common,
-                dataString: dataString,
-                shouldShowLoading: shouldShowLoading,
-                delay: delay,
-                responseType: responseType,
-                completion: completion
-            )
-            return
-        }
-
-        // 2. special /api/bgc APIs
-        if api.contains("/api/bgc/") {
-            handleBrandVoucherAPI(
-                api: api,
-                json: json,
-                dataString: dataString,
-                shouldShowLoading: shouldShowLoading,
-                delay: delay,
-                responseType: responseType,
-                completion: completion
-            )
-            return
-        }
-
-        // default
-        completion(.failure(makeError(domain: "data", code: 0, message: decodeJsonErrorMessage)))
-    }
     
     private func handleCommonHeadAPI<O: Decodable>(
         api: String,
@@ -369,14 +302,15 @@ final class DataAccess {
                 let error = NSError(domain: "ClientError", code: -1, userInfo: [NSLocalizedDescriptionKey: self.decodeJsonErrorMessage])
                 self.showHideLoading(isShow: false, isForce: true)
                
-                
                 completion(
                     .failure(error)
                 )
             }
         }.resume()
     }
-    
+}
+
+extension DataAccess : Sendable {
     /** Request data task with API and response data & error as completion */@MainActor
     func requestDataTask<I: Encodable, O: Decodable>(
         api: String,
@@ -423,5 +357,79 @@ final class DataAccess {
             )
 
         }.resume()
+    }
+}
+
+// DataAccess+Network.swift
+extension DataAccess {
+    private func makeError(domain: String, code: Int, message: String) -> NSError {
+        return NSError(domain: domain, code: code, userInfo: [NSLocalizedDescriptionKey: message])
+    }
+    
+    private func handleNetworkError(api: String, error: Error) -> NSError {
+        let nsError = error as NSError
+        let code = nsError.code
+
+        if code == -1009 {
+            return makeError(domain: "internet", code: code, message: noInternetMessage)
+        }
+
+        return makeError(domain: "unknown", code: code, message: nsError.localizedDescription)
+    }
+    
+    private func handleResponse<O: Decodable>(
+        api: String,
+        dataString: String,
+        shouldShowLoading: Bool,
+        delay: TimeInterval,
+        responseType: O.Type,
+        completion: @escaping (Result<O, NSError>) -> Void
+    ) {
+
+        guard let json = ShareMethod.shared.convertToDictionary(jsonString: dataString) else {
+            completion(.failure(makeError(domain: "json", code: 0, message: decodeJsonErrorMessage)))
+            return
+        }
+
+        // 1. COMMON_HEAD style API
+        if let common = json["COMMON_HEAD"] as? [String:Any] {
+            handleCommonHeadAPI(
+                api: api,
+                common: common,
+                dataString: dataString,
+                shouldShowLoading: shouldShowLoading,
+                delay: delay,
+                responseType: responseType,
+                completion: completion
+            )
+            return
+        }
+
+        // 2. special /api/bgc APIs
+        if api.contains("/api/bgc/") {
+            handleBrandVoucherAPI(
+                api: api,
+                json: json,
+                dataString: dataString,
+                shouldShowLoading: shouldShowLoading,
+                delay: delay,
+                responseType: responseType,
+                completion: completion
+            )
+            return
+        }
+
+        // default
+        completion(.failure(makeError(domain: "data", code: 0, message: decodeJsonErrorMessage)))
+    }
+}
+
+// DataAccess+Helpers.swift
+extension DataAccess {
+    func showHideLoading(isShow: Bool, isForce: Bool = false, message: String = "", delay: TimeInterval = 0.25) {
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            isShow ? Loading.shared.showLoading() : (isForce ? Loading.shared.hideLoading() : Loading.shared.delayBeforeHide(after: delay))
+        }
     }
 }

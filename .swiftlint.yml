@@ -57,6 +57,6 @@ identifier_name:
 
 type_body_length:
   warning: 300
-  error: 400
+  error: 500
 
 
