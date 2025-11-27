@@ -85,38 +85,79 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    func fetchMG001(showLoading: Bool, completion: @escaping @MainActor (NSError?) -> Void) {
-        Task {
-            DataAccess().fetchGateWay(
-                id: API.MG001,
-                body: MG001Model.Request(),
-                responseType: Response<MG001Model.MGResponse>.self,
-                shouldShowLoading: showLoading
-            ) { result in
-                
-                Task { @MainActor in
-                    switch result {
-                    case .failure(let error):
-                        completion(error)
-                        
-                    case .success(let data):
-                        if let mgData = data.RESP_DATA?._tran_res_data.first {
+//    func fetchMG001(showLoading: Bool, completion: @escaping @Sendable (NSError?) -> Void) {
+//        Task {
+//            DataAccess().fetchGateWay(
+//                id: API.MG001,
+//                body: MG001Model.Request(),
+//                responseType: Response<MG001Model.MGResponse>.self,
+//                shouldShowLoading: showLoading
+//            ) { result in
+//                
+//                Task { @MainActor in
+//                    switch result {
+//                    case .failure(let error):
+//                        completion(error)
+//                        
+//                    case .success(let data):
+//                        if let mgData = data.RESP_DATA?._tran_res_data.first {
+//                            ShareConstant.shared.mg001Data = mgData
+//                            completion(nil)
+//                        } else {
+//                            let error = NSError(
+//                                domain: "ERROR_MG",
+//                                code: 1168,
+//                                userInfo: [NSLocalizedDescriptionKey: Network_Message.errorOccurredWhileProcessing]
+//                            )
+//                            completion(error)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+    @MainActor
+    func fetchMG001(
+        showLoading: Bool,
+        completion: @escaping @Sendable (NSError?) -> Void
+    ) {
+        DataAccess().fetchGateWay(
+            id: API.MG001,
+            body: MG001Model.Request(),
+            responseType: Response<MG001Model.MGResponse>.self,
+            shouldShowLoading: showLoading
+        ) { @Sendable result in
+            // Directly safe to call because we're on MainActor
+            switch result {
+            case .failure(let error):
+                completion(error)
+
+            case .success(let data):
+                if let mgData = data.RESP_DATA?._tran_res_data.first {
+                    Task {
+                        await MainActor.run {
+                            // Safe mutation of MainActor-isolated properties
                             ShareConstant.shared.mg001Data = mgData
-                            completion(nil)
-                        } else {
-                            let error = NSError(
-                                domain: "ERROR_MG",
-                                code: 1168,
-                                userInfo: [NSLocalizedDescriptionKey: Network_Message.errorOccurredWhileProcessing]
-                            )
-                            completion(error)
                         }
                     }
+                    
+                    completion(nil)
+                } else {
+                    let error = NSError(
+                        domain: "ERROR_MG",
+                        code: 1168,
+                        userInfo: [
+                            NSLocalizedDescriptionKey:
+                                Network_Message.errorOccurredWhileProcessing
+                        ]
+                    )
+                    completion(error)
                 }
             }
         }
     }
-    
+
 }
 
 // actor Counter {
@@ -137,4 +178,4 @@ class HomeViewModel: ObservableObject {
 //    func debugPrint() {
 //        print("Inside actor:", count)
 //    }
-//}
+// }

@@ -38,13 +38,20 @@ extension UIViewController {
         target.navigationItem.leftBarButtonItem = leftItem
     }
     
-    func setupMenuView(withTarget target : UIViewController ,actionData: String, leftAction: Selector?, rightAction: Selector?, manualTitle: String? = nil) {
-        //Left button
-        let leftBtn = UIButton(type: .custom)
-        leftBtn.contentHorizontalAlignment = .left
+    func setupMenuView(withTarget target : UIViewController, actionData: String, leftAction: Selector?, rightAction: Selector?, manualTitle: String? = nil) {
+        // Left button
+        let leftBtn = UIButton(type: .system)
+        var config = UIButton.Configuration.plain()
+        config.imagePadding = -10    // equivalent to left image inset
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        config.imagePlacement = .leading
+        config.title = "Button"
+        config.image = UIImage(systemName: "chevron.left")
+
+        leftBtn.configuration = config
         leftBtn.frame = CGRect(x: 0, y: 0, width: 60, height: 20)
-        leftBtn.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
-       
+        leftBtn.contentHorizontalAlignment = .leading
+
         leftBtn.setImage(UIImage(named: "btn_navi_back"), for: .normal)
         leftBtn.setImage(UIImage(named: "btn_navi_back"), for: .highlighted)
         leftBtn.accessibilityLabel = "상위메뉴로 이동"
@@ -65,7 +72,7 @@ extension UIViewController {
 }
 
 extension UIColor {
-    //Convert to Hex
+    // Convert to Hex
     public convenience init?(hexString: String, alpha: CGFloat = 1.0) {
         var hexFormatted: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
         
@@ -94,8 +101,7 @@ extension CALayer {
     x: CGFloat = 0,
     y: CGFloat = 14,
     blur: CGFloat = 32,
-    spread: CGFloat = 0)
-    {
+    spread: CGFloat = 0) {
         masksToBounds = false
         shadowColor = color.cgColor
         shadowOpacity = alpha
@@ -331,7 +337,6 @@ extension UIView {
         layer.shadowPath = path.cgPath
     }
 }
-
 
 extension Encodable {
     func asJSONString() -> String? {

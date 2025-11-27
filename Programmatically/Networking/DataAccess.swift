@@ -12,6 +12,25 @@ enum RequestMethod: String {
     case get  = "GET"
     case post = "POST"
 }
+
+struct ResponseRequest<O: Decodable> {
+    let api                 : String
+    let dataString          : String
+    let shouldShowLoading   : Bool
+    let delay               : TimeInterval
+    let responseType        : O.Type
+    let common              : [String: Any]
+}
+
+struct HandleCommonHead<O: Decodable> {
+    let api                 : String
+    let common              : [String: Any]
+    let dataString          : String
+    let shouldShowLoading   : Bool
+    let delay               : TimeInterval
+    let responseType        : O.Type
+}
+
 final class DataAccess {
     
     @MainActor private static var sharedInstance   = DataAccess()
@@ -64,8 +83,8 @@ final class DataAccess {
             url = URL(string: API.MG001URL)
             request = URLRequest(url: url)
             request.httpMethod = "GET"
-        }else{
-            //if api contain http or https ==> remove baseUrl
+        } else {
+            // if api contain http or https ==> remove baseUrl
             if urlApi.contains("http://") || urlApi.contains("https://") {
                 baseServerURL = ""
             }
@@ -95,78 +114,69 @@ final class DataAccess {
         return request(urlApi: api, body: body)
     }
     
-    
     private func handleCommonHeadAPI<O: Decodable>(
-        api: String,
-        common: [String: Any],
-        dataString: String,
-        shouldShowLoading: Bool,
-        delay: TimeInterval,
-        responseType: O.Type,
+        handleCommonHead: HandleCommonHead<O>,
         completion: @escaping (Result<O, NSError>) -> Void
     ) {
-        let isError = common["ERROR"] as? Bool ?? false
+        let isError = handleCommonHead.common["ERROR"] as? Bool ?? false
 
         if !isError {
+            let requestRecodeObj = ResponseRequest(
+                api: handleCommonHead.api,
+                dataString: handleCommonHead.dataString,
+                shouldShowLoading: handleCommonHead.shouldShowLoading,
+                delay: handleCommonHead.delay,
+                responseType: handleCommonHead.responseType, common: ["" : (Any).self]
+            )
             decodeObject(
-                api: api,
-                jsonString: dataString,
-                responseType: responseType,
-                shouldShowLoading: shouldShowLoading,
-                delay: delay,
+                decodeObj: requestRecodeObj,
                 completion: completion
             )
             return
         }
 
-        let code = common["CODE"] as? String ?? "1002"
-        let message = common["MESSAGE"] as? String ?? ""
+        let code = handleCommonHead.common["CODE"] as? String ?? "1002"
+        let message = handleCommonHead.common["MESSAGE"] as? String ?? ""
 
         let mapped = mapErrorCode(code: code, message: message)
         completion(.failure(mapped))
     }
 
     private func handleBrandVoucherAPI<O: Decodable>(
-        api: String,
-        json: [String: Any],
-        dataString: String,
-        shouldShowLoading: Bool,
-        delay: TimeInterval,
-        responseType: O.Type,
+        handleBrand: HandleCommonHead<O>,
         completion: @escaping (Result<O, NSError>) -> Void
     ) {
-        if json["CODE"] as? String == "0000" {
+        if handleBrand.common["CODE"] as? String == "0000" {
+            let requestRecodeObj = ResponseRequest(
+                api: handleBrand.api,
+                dataString: handleBrand.dataString,
+                shouldShowLoading: handleBrand.shouldShowLoading,
+                delay: handleBrand.delay,
+                responseType: handleBrand.responseType, common: ["" : (Any).self]
+            )
             decodeObject(
-                api: api,
-                jsonString: dataString,
-                responseType: responseType,
-                shouldShowLoading: shouldShowLoading,
-                delay: delay,
+                decodeObj: requestRecodeObj,
                 completion: completion
             )
         } else {
-            let msg = json["MSG"] as? String ?? ""
+            let msg = handleBrand.common["MSG"] as? String ?? ""
             completion(.failure(makeError(domain: "voucher", code: 1002, message: msg)))
         }
     }
 
     private func decodeObject<O: Decodable>(
-        api: String,
-        jsonString: String,
-        responseType: O.Type,
-        shouldShowLoading: Bool,
-        delay: TimeInterval,
+        decodeObj: ResponseRequest<O>,
         completion: @escaping (Result<O, NSError>) -> Void
     ) {
-        guard let data = jsonString.data(using: .utf8) else {
+        guard let data = decodeObj.dataString.data(using: .utf8) else {
             completion(.failure(makeError(domain: "json", code: -1, message: decodeJsonErrorMessage)))
             return
         }
 
         do {
-            let obj = try JSONDecoder().decode(responseType, from: data)
-            if shouldShowLoading {
-                showHideLoading(isShow: false, delay: delay)
+            let obj = try JSONDecoder().decode(decodeObj.responseType, from: data)
+            if decodeObj.shouldShowLoading {
+                showHideLoading(isShow: false, delay: decodeObj.delay)
             }
             completion(.success(obj))
 
@@ -319,7 +329,7 @@ extension DataAccess : Sendable {
         shouldShowLoading: Bool = true,
         messageLoading: String = "",
         delayDuration: TimeInterval = 0.25,
-        completion: @escaping (Result<O, NSError>) -> Void
+        completion: @escaping @Sendable(Result<O, NSError>) -> Void
     ) {
         let request = makeRequest(api: api, body: body)
 
@@ -327,7 +337,7 @@ extension DataAccess : Sendable {
             showHideLoading(isShow: true, message: messageLoading)
         }
 
-        DataAccess.session.dataTask(with: request) { data, response, error in
+        DataAccess.session.dataTask(with: request) { data, _, error in
             
             if let error = error {
                 let handled = self.handleNetworkError(api: api, error: error)
@@ -335,7 +345,7 @@ extension DataAccess : Sendable {
                 completion(.failure(handled))
                 return
             }
-
+            
             guard let data = data else {
                 let timeoutErr = self.makeError(
                     domain: "logout",
@@ -347,15 +357,83 @@ extension DataAccess : Sendable {
                 return
             }
 
-            self.handleResponse(
-                api: api,
-                dataString: String(decoding: data, as: UTF8.self),
-                shouldShowLoading: shouldShowLoading,
-                delay: delayDuration,
-                responseType: responseType,
-                completion: completion
-            )
+            if let dataString = String(data: data, encoding: .utf8) {
+                let requestData = ResponseRequest(
+                    api: api,
+                    dataString: dataString,
+                    shouldShowLoading: shouldShowLoading,
+                    delay: delayDuration,
+                    responseType: responseType, common: ["" : (Any).self]
+                )
+                
+                let dataResult = dataString.data(using: .utf8)
+                Log.s("""
+                \(request.url!) | \(api)
+                \(dataResult?.prettyPrinted ?? "")
+                """)
+                
+                self.handleResponse(requestHandler: requestData, completion: completion)
 
+            } else {
+                // Handle invalid UTF-8 data
+                print("Failed to convert data to string")
+            }
+        }.resume()
+    }
+    
+    @MainActor
+    func fetchGateWay<I: Encodable, O: Decodable>(
+        id: String,
+        body: I,
+        responseType: O.Type,
+        shouldShowLoading: Bool = true,
+        completion: @escaping @Sendable (Result<O, NSError>) -> Void
+    ) {
+
+        let request = self.request(urlApi: id, body: body)
+        if shouldShowLoading { self.showHideLoading(isShow: shouldShowLoading) }
+
+        let sessionConfig = URLSessionConfiguration.default
+        sessionConfig.urlCache?.removeAllCachedResponses()
+        let webcashSession = URLSession(configuration: sessionConfig)
+
+        webcashSession.dataTask(with: request) { data, _, error in
+            
+            if let error = error as NSError? {
+                self.showHideLoading(isShow: false, isForce: true)
+                self.handleNetworkErrorGateWay(error, api: id) { result in
+                    completion(.failure(result)) // ✅ Safe
+                }
+                return
+            }
+
+            // avoid ERROR ❌❌❌------------------------------------------
+            guard let data = data, let dataResult = self.preprocessData(data) else {
+                self.showHideLoading(isShow: false, isForce: true)
+                let timeoutError = NSError(domain: "TimeoutError", code: 1004, userInfo: [NSLocalizedDescriptionKey: self.globalErrorMessage])
+                completion(.failure(timeoutError))
+                return
+            }
+
+            do {
+                let responseObj = try JSONDecoder().decode(responseType, from: dataResult)
+                Log.s("""
+                \(request.url!) | \(id)
+                \(dataResult.prettyPrinted)
+                """)
+                if shouldShowLoading { self.showHideLoading(isShow: false) }
+                DispatchQueue.main.async { completion(.success(responseObj)) }
+            } catch {
+                print("Everything is bad. ❌❌❌")
+                print("Error pasing: \n", error.localizedDescription)
+                Log.e("""
+                Can't decode responseObject: \(id)
+                \(dataResult.prettyPrinted)
+                """)
+                let decodeError = NSError(domain: "ClientError", code: -1, userInfo: [NSLocalizedDescriptionKey: self.decodeJsonErrorMessage])
+                self.showHideLoading(isShow: false, isForce: true)
+                completion(.failure(decodeError))
+            }
         }.resume()
     }
 }
@@ -377,43 +455,53 @@ extension DataAccess {
         return makeError(domain: "unknown", code: code, message: nsError.localizedDescription)
     }
     
+    private func handleNetworkErrorGateWay(_ error: NSError, api: String, completion: (NSError) -> Void) {
+        if error.code == -1009 {
+            let noInternetError = NSError(domain: "no_internet_connection", code: error.code, userInfo: [NSLocalizedDescriptionKey: self.noInternetMessage])
+            completion(noInternetError)
+        } else {
+            let unknownError = NSError(domain: "Unknown_Error", code: error.code, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])
+            completion(unknownError)
+        }
+    }
+    
     private func handleResponse<O: Decodable>(
-        api: String,
-        dataString: String,
-        shouldShowLoading: Bool,
-        delay: TimeInterval,
-        responseType: O.Type,
+        requestHandler: ResponseRequest<O>,
         completion: @escaping (Result<O, NSError>) -> Void
     ) {
-
-        guard let json = ShareMethod.shared.convertToDictionary(jsonString: dataString) else {
+        
+        guard let json = ShareMethod.shared.convertToDictionary(jsonString: requestHandler.dataString) else {
             completion(.failure(makeError(domain: "json", code: 0, message: decodeJsonErrorMessage)))
             return
         }
 
         // 1. COMMON_HEAD style API
         if let common = json["COMMON_HEAD"] as? [String:Any] {
-            handleCommonHeadAPI(
-                api: api,
+            
+            let head = HandleCommonHead(
+                api: requestHandler.api,
                 common: common,
-                dataString: dataString,
-                shouldShowLoading: shouldShowLoading,
-                delay: delay,
-                responseType: responseType,
-                completion: completion
+                dataString: requestHandler.dataString,
+                shouldShowLoading: requestHandler.shouldShowLoading,
+                delay: requestHandler.delay,
+                responseType: requestHandler.responseType
             )
+            handleCommonHeadAPI(handleCommonHead: head, completion: completion)
             return
         }
 
         // 2. special /api/bgc APIs
-        if api.contains("/api/bgc/") {
+        if requestHandler.api.contains("/api/bgc/") {
+            let head = HandleCommonHead(
+                api: requestHandler.api,
+                common: json,
+                dataString: requestHandler.dataString,
+                shouldShowLoading: requestHandler.shouldShowLoading,
+                delay: requestHandler.delay,
+                responseType: requestHandler.responseType
+            )
             handleBrandVoucherAPI(
-                api: api,
-                json: json,
-                dataString: dataString,
-                shouldShowLoading: shouldShowLoading,
-                delay: delay,
-                responseType: responseType,
+                handleBrand: head,
                 completion: completion
             )
             return
@@ -422,13 +510,19 @@ extension DataAccess {
         // default
         completion(.failure(makeError(domain: "data", code: 0, message: decodeJsonErrorMessage)))
     }
+    
+    private func preprocessData(_ data: Data) -> Data? {
+        guard let dataString = String(data: data, encoding: .utf8),
+              let decodedString = dataString.removingPercentEncoding else { return nil }
+        let cleanedString = decodedString.replacingOccurrences(of: "+", with: " ")
+        return cleanedString.data(using: .utf8)
+    }
 }
 
 // DataAccess+Helpers.swift
 extension DataAccess {
     func showHideLoading(isShow: Bool, isForce: Bool = false, message: String = "", delay: TimeInterval = 0.25) {
         DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             isShow ? Loading.shared.showLoading() : (isForce ? Loading.shared.hideLoading() : Loading.shared.delayBeforeHide(after: delay))
         }
     }

@@ -81,7 +81,7 @@ class MainBannerCell: UITableViewCell {
         let wCell = UIScreen.main.bounds.width - 40
         let aspectRatio: CGFloat = (86/335)
         let hCell = wCell * aspectRatio
-        layout.itemSize = CGSize(width: wCell , height: hCell)
+        layout.itemSize = CGSize(width: wCell, height: hCell)
         self.collectionView.setCollectionViewLayout(layout, animated: false)
         self.collectionView.isPagingEnabled = true
     }
@@ -90,7 +90,7 @@ class MainBannerCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -OBJC
+    // MARK: - OBJC
     @objc private func makeBannerScrollAction() {
         
         // reverse moving
@@ -102,7 +102,6 @@ class MainBannerCell: UITableViewCell {
         if self.currentIndexPath.item == 0 {
             self.moveBannerDirection = 1
         }
-        
         
         if self.moveBannerDirection == -1 {
             DispatchQueue.main.async {

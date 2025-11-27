@@ -14,9 +14,7 @@ enum LanguageCode: String {
 @MainActor
 extension String {
     var localized: String {
-        get {
-            return common_loalized(language: ShareConstant.language.rawValue)
-        }
+        common_loalized(language: ShareConstant.language.rawValue)
     }
 
     private func common_loalized(language: String) -> String {

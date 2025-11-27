@@ -44,12 +44,10 @@ public class Log {
             if let obj = obj {
                 if (obj as? String ?? "").contains("\n") {
                     print((obj as? String ?? "") /*.replace(of: "\n", with: "\n| ") */, terminator: " ")
-                }
-                else {
+                } else {
                     debugPrint(obj, terminator: " ")
                 }
-            }
-            else {
+            } else {
                 print("nil", terminator: " ")
             }
         }

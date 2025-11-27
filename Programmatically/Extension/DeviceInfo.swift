@@ -105,7 +105,7 @@ class DeviceInfo {
             
             // iPhone3,1 iPhone3,2 iPhone3,3 iPhone4,1 iPhone5,1 iPhone5,2 iPhone5,3 iPhone5,4
             // iPhone6,1 iPhone6,2 iPhone7,2 iPhone8,1 iPhone8,4 iPhone9,1 iPhone9,3
-            return 326;
+            return 326
         }
         
         // IPad Mini
@@ -135,11 +135,11 @@ class DeviceInfo {
         }
         
         // IPad
-        let iPadLowPPITypes = Set<AnyHashable>(["iPad1,1","iPad2,1", "iPad2,2", "iPad2,3"])
+        let iPadLowPPITypes = Set<AnyHashable>(["iPad1,1", "iPad2,1", "iPad2,2", "iPad2,3"])
         if iPadLowPPITypes.contains(systemInfoString) {
             return 132
         }
         // iPad3,1 iPad3,2 iPad3,3 iPad3,4 iPad3,5 iPad3,6 iPad4,1 iPad4,2 iPad4,3 iPad5,3 iPad5,4 iPad6,3 iPad6,4 iPad6,7 iPad6,8
-        return 264;
+        return 264
     }
 }

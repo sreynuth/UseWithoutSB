@@ -29,7 +29,7 @@ class BannerImageCell: UITableViewCell {
             bannerImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             bannerImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bannerImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            bannerImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            bannerImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
 }

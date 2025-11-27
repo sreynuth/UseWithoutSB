@@ -8,7 +8,7 @@
 import UIKit
 
 struct API {
-    private init(){}
+    private init() {}
     
     static var serverURL    : String { return "https://dev-biz-zero.bizplay.co.kr"}
     

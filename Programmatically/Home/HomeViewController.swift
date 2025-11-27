@@ -125,7 +125,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let mainSection = HomeType(rawValue: indexPath.section)else {return CGFloat()}
-        switch mainSection{
+        switch mainSection {
         case .BANNER:
             let wCell = UIScreen.main.bounds.width - 40
             let aspectRatio: CGFloat = (86/335)

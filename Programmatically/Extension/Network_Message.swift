@@ -8,7 +8,7 @@
 import Foundation
 
 class Network_Message {
-    private init(){}
+    private init() {}
     
     static var internetConnectUnstable: String { return "인터넷 연결이 불안정합니다. 잠시 후 이용하시기 바랍니다."}
     

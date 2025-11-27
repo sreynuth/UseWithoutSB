@@ -126,9 +126,9 @@ class PaymentOptionCell: UITableViewCell {
         } else {
             if indexPath == 0 {
                 verticalAnchor = profileView.bottomAnchor.constraint(equalTo: contentUIView.bottomAnchor)
-            } else if self.indexPath == (self.countItem ?? 0) - 1{
+            } else if self.indexPath == (self.countItem ?? 0) - 1 {
                 verticalAnchor = profileView.topAnchor.constraint(equalTo: contentUIView.topAnchor)
-            }else {
+            } else {
                 verticalAnchor = profileView.centerYAnchor.constraint(equalTo: contentUIView.centerYAnchor)
             }
         }
@@ -136,7 +136,6 @@ class PaymentOptionCell: UITableViewCell {
         NSLayoutConstraint.activate([leftAnchor, verticalAnchor])
     }
 
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -158,17 +157,16 @@ class PaymentOptionCell: UITableViewCell {
                 contentUIView.cornerTopRadius           = 12
                 contentUIView.addShadow(position: .topLeftRight)
                 
-            }else if self.indexPath == (self.countItem ?? 0) - 1 { // Last row
+            } else if self.indexPath == (self.countItem ?? 0) - 1 { // Last row
                 contentUIView.cornerBottomRadius        = 12
                 contentUIView.addShadow(position: .bottomLeftRight)
                 
-            }else{ // Center row
+            } else { // Center row
                 contentUIView.cornerAllRadius           = 0
                 contentUIView.addShadow(position: .leftRight)
             }
         }
     }
-    
     
     func configure(items: HomeModel.BankList, indexPath: Int, countItem: Int) {
         self.indexPath = indexPath

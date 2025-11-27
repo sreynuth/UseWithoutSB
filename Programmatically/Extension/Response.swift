@@ -5,7 +5,6 @@
 //  Created by Nin Sreynuth on 14/11/25.
 //
 
-
 struct Response<T: Decodable> : Decodable {
     let RSLT_CD : String?
     let RSLT_MSG : String?

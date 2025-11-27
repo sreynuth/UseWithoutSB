@@ -13,50 +13,45 @@ disabled_rules:
   - colon                   # (:)
 
 opt_in_rules:
-  - explicit_self
   - closure_body_length
   - unowned_variable_capture
-  - unused_import
   - unused_optional_binding
 
 # Swift 6 Concurrency Rules
 analyzer_rules:
-  - strict_concurrency
   - unused_declaration
-  - unused_imports
-
-strict_concurrency:
-  severity: warning
-  allowed_safety:
-    - nonisolated
-    - Sendable
-    - global_actor
+  - unused_import
+  - explicit_self
 
 included:
   - Programmatically
-
+  
 excluded:
   - Pods
   - Carthage
   - SwiftLint
-  
+
 type_name:
   allowed_symbols: "_"
   validates_start_with_lowercase: false
-  validates_start_lowercase: false
 
 identifier_name:
-  min_length: 2
+  min_length: 1
   max_length: 40
   allowed_symbols: "_"
   excluded:
+    - x
+    - y
+    - i
+    - j
+    - k
     - id
     - vm
     - db
     - ui
 
 type_body_length:
-  warning: 300
+  warning: 500
   error: 500
 
 
